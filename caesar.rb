@@ -13,15 +13,25 @@ class Caesar
   def encrypt
     @message.each do |word|
       word.chars.each do |char|
-        @encrypted_message += rotate_letter(char)
+        if !CIPHER_LOWERCASE.include?(char) && !CIPHER_UPPERCASE.include?(char)
+          @encrypted_message +=  char
+        else
+          @encrypted_message += rotate_letter(char)
+        end
       end
+      @encrypted_message += " "
     end
-    binding.pry
+  @encrypted_message.chop
   end
 
   def rotate_letter(letter)
-    new_index = CIPHER_LOWERCASE.index(letter.downcase) + rotator.to_i
-    CIPHER_LOWERCASE[new_index]
+    if CIPHER_LOWERCASE.include?(letter)
+      new_index = (CIPHER_LOWERCASE.index(letter) + rotator.to_i) % 26
+      CIPHER_LOWERCASE[new_index]
+    else
+      new_index = (CIPHER_UPPERCASE.index(letter) + rotator.to_i) % 26
+      CIPHER_UPPERCASE[new_index]
+    end
   end
 
 
@@ -30,4 +40,4 @@ end
 rotator = ARGV[0]
 message = ARGV[1..-1]
 
-Caesar.new(rotator, message).encrypt
+puts Caesar.new(rotator, message).encrypt
